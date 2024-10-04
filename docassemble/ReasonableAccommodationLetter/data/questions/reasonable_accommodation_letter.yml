@@ -57,7 +57,7 @@ code: |
   github_repo_name =  'docassemble-ReasonableAccommodationLetter'
 ---
 code: |
-  interview_short_title = "Write a Reasonable accomodation template v10"
+  interview_short_title = "Write a Reasonable accomodation"
 ---
 code: |
   al_form_type = "letter" 
@@ -112,7 +112,7 @@ continue button field: reasonable_accommodation_letter_intro
 question: |
   Reasonable Accommodation Letter
 subquestion: |
-  This interview will help you write a Reasonable accommodation letter to an Employer.
+  This interview will help you write a reasonable accommodation letter to an employer.
   
   Before you get started, please gather:
   
@@ -225,6 +225,10 @@ columns:
       row_item.job_title if defined("row_item.job_title") else ""
   - Employment start date: |
       row_item.employment_start_date if defined("row_item.employment_start_date") else ""
+  - Other parties name: |
+      row_item.other_parties if defined("row_item.other_parties") else ""  
+  - Other parties contact: |
+      row_item.other_parties_contact if defined("row_item.other_parties_contact") else ""  
   - Other parties address line one: |
       row_item.other_parties_address_line_one if defined("row_item.other_parties_address_line_one") else ""
   - Other parties address line two: |
@@ -239,6 +243,8 @@ edit:
   - signature_date
   - job_title
   - employment_start_date
+  - other_parties
+  - other_parties_contact
   - other_parties_address_line_one
   - other_parties_address_line_two
   - disability_description
