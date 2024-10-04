@@ -45,8 +45,8 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
 
 setup(name='docassemble.ReasonableAccommodationLetter',
       version='1.0',
-      description=('Reasonable Accommodation Letter'),
-      long_description='# docassemble.ReasonableAccommodationLetter\r\n\r\nReasonable Accommodation Letter\r\n\r\n## Author\r\n\r\nTiffany Whiles\r\n\r\n',
+      description=('Reasonable accommodation letter'),
+      long_description='# docassemble.ReasonableAccommodationLetter\r\n\r\nReasonable accommodation letter\r\n\r\n## Author\r\n\r\nTiffany Whiles\r\n\r\n',
       long_description_content_type='text/markdown',
       author='Tiffany Whiles',
       author_email='twhiles@su.suffolk.edu',
