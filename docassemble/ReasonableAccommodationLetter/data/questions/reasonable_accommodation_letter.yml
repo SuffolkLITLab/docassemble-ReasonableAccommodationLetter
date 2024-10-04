@@ -57,7 +57,7 @@ code: |
   github_repo_name =  'docassemble-ReasonableAccommodationLetter'
 ---
 code: |
-  interview_short_title = "Write a Reasonable accomodation template v10"
+  interview_short_title = "Write a Reasonable accomodation"
 ---
 code: |
   al_form_type = "letter" 
