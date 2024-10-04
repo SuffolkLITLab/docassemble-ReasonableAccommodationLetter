@@ -4,26 +4,27 @@ include:
 ---
 metadata:
   title: >-
-    Reasonable Accommodation Letter
+    Reasonable accommodation letter
   short title: >-
-    Reasonable Accommodation
+    Reasonable accommodation
   description: |-
-    This interview helps someone in Massachusetts write a letter to their employer for a reasonable accommodation.
+    This interview helps someone in Massachusetts write a reasonable accommodation letter.
   can_I_use_this_form: |
-    If you are an Employee, you can use this interview to request an accommodation from your Employer.
+    If you are an employee, you can use this interview to request a reasonable accommodation from your employer.
   before_you_start: |
-    This interview will help you, an employee, write a reasonable accommodation letter to an employer.
+    This interview will help you write a reasonable accommodation letter.
     
     Before you get started, please gather:
     
-    1. Employer Contact Information
-    1. Medical Information and/or Records
-    1. 
+    1. Specific item(s) you are requesting. 
+    1. Medical records (if employer requests). 
+    1. Employer address and contact information. 
     
     When you are finished, you will need to:
     
-    1. Sign
-    1. Mail or Deliver to Employer Contact (i.e., HR Dept.)
+    1. Review, print, and sign your letter. 
+    1. Email or deliver your letter to your employer. 
+    1. Save a copy of all correspondence for your records.
   maturity: production
   estimated_completion_minutes: 5
   estimated_completion_delta: 5
@@ -35,13 +36,13 @@ metadata:
   allowed_courts: []
   typical_role: "plaintiff"
   al_weaver_version: "1.11.0"
-  generated_on: "2024-10-02"
+  generated_on: "2024-10-04"
   languages:
     - en
   jurisdiction: NAM-US-US+MA
-  review_date: 2024-10-02
+  review_date: 2024-10-04
   form_titles:
-    - Reasonable Accommodation Letter
+    - Reasonable accommodation letter
   form_numbers: []
   update_notes: |
 ---
@@ -57,7 +58,7 @@ code: |
   github_repo_name =  'docassemble-ReasonableAccommodationLetter'
 ---
 code: |
-  interview_short_title = "Write a Reasonable accomodation"
+  interview_short_title = "Write a reasonable accommodation letter"
 ---
 code: |
   al_form_type = "letter" 
@@ -79,12 +80,16 @@ code: |
   user_ask_role = "plaintiff"
   users.gather()
   set_parts(subtitle=str(users))
-  users[0].job_title
-  users[0].other_parties_address_line_one
-  set_progress(25)
-  users[0].accommodation_request
-  users[0].signature_date
   users[0].address.address
+  users[0].email
+  set_progress(20)
+  users[0].job_title
+  users[0].other_parties_address_line_two
+  users[0].employment_start_date
+  set_progress(40)
+  users[0].accommodation_request
+  users[0].disability_description
+  users[0].signature_if_final
   interview_order_reasonable_accommodation_letter = True
 ---
 ###################### Main order ######################
@@ -107,66 +112,85 @@ code: |
   )
   reasonable_accommodation_letter_download
 ---
-id: Reasonable_Accommodation_Letter
+id: Reasonable_accommodation_letter
 continue button field: reasonable_accommodation_letter_intro
 question: |
-  Reasonable Accommodation Letter
+  Reasonable accommodation letter
 subquestion: |
-  This interview will help you write a reasonable accommodation letter to an employer.
+  This interview will help you write a reasonable accommodation letter.
   
   Before you get started, please gather:
   
-  1. Employer Contact Information
-  1. Medical Information and/or Records
-  1. 
+  1. Specific item(s) you are requesting. 
+  1. Medical records (if employer requests). 
+  1. Employer address and contact information. 
   
   When you are finished, you will need to:
   
-  1. Sign
-  1. Mail or Deliver to Employer Contact (i.e., HR Dept.)
+  1. Review, print, and sign your letter. 
+  1. Email or deliver your letter to your employer. 
+  1. Save a copy of all correspondence for your records.
 
-  If you are an Employee, you can use this interview to request an accommodation from your Employer.
+  If you are an employee, you can use this interview to request a reasonable accommodation from your employer.
 
   Most people take about 5 minutes to complete this interview.
 ---
-id: Employee Info
+id: Employee Contact Information
 question: |
-  Employee Info
+  Employee Contact Information
 subquestion: |
-  Enter some brief information about yourself (the employee requesting an accomodation)
+  Please provide your name, address, and job title.
 fields:
   - "Job Title": users[0].job_title
-  - "Employment Start Date": users[0].employment_start_date
-    datatype: date
 ---
-id: Employer Information
+id: Employer Company Information
 question: |
-  Employer Information
+  Employer (Company) Information
 subquestion: |
-  Enter the Company Information for your Employer
+  Please tell us who you work for, and their contact information.
 fields:
+  - "Employer Address (City, State, Zip)": users[0].other_parties_address_line_two
+  - "Employer Address (Street, Unit)": users[0].other_parties_address_line_one
   - "Employer Name": users[0].other_parties
-  - "Employer Contact": users[0].other_parties_contact
-  - "Employer Address (Line One)": users[0].other_parties_address_line_one
-  - "Employer Address (Line Two)": users[0].other_parties_address_line_two
+  - "Employer Contact Name (i.e., HR contact person)": users[0].other_parties_contact
+---
+id: Employment Start Date
+question: |
+  Employment Start Date
+subquestion: |
+  What date did you start working for this company?
+fields:
+  - "What date did your employment begin": users[0].employment_start_date
+    datatype: date
 ---
 id: Accommodation Request
 question: |
   Accommodation Request
 subquestion: |
-  Enter a description of the accommodation being requested along with a brief description of the disability or condition.
+  Please provide a description of the accommodation you are requesting. For examples, see https://www.mass.gov/info-details/request-for-reasonable-accommodation
 fields:
-  - "Accommodation request description": users[0].accommodation_request
-  - "Description of Employee's Disability": users[0].disability_description
+  - "Provide a brief description of the accommodation": users[0].accommodation_request
 ---
-id: Signature Date
+id: Disability or Condition Information
 question: |
-  Signature Date
+  Disability or Condition Information
 subquestion: |
-  Enter the date letter will be signed
+  Provide a short description of the reason you are requesting an accommodation. 
+  
+  Note: Some employers may request documentation.
 fields:
-  - "Date Signed": users[0].signature_date
+  - "Provide a short description of the disability.": users[0].disability_description
+---
+id: Signature
+question: |
+  Signature
+subquestion: |
+  If you are satisfied with your answers, enter the date and upload a signature file (.png)
+fields:
+  - "Signature": users[0].signature_if_final
+  - "Signature date (if final)": users[0].signature_date
     datatype: date
+    required: False
 ---
 id: preview reasonable_accommodation_letter
 question: |
@@ -185,7 +209,7 @@ subquestion: |
 continue button field: reasonable_accommodation_letter_preview_question    
 ---
 code: |
-  signature_fields = ['users[0].signature']
+  signature_fields = []
 ---
 id: reasonable accommodation letter review screen
 event: review_reasonable_accommodation_letter
@@ -211,43 +235,46 @@ subquestion: |
 table: users.table
 rows: users
 columns:
-  - Signature: |
-      row_item.signature if defined("row_item.signature") else ""
-  - Name: |
-      row_item.name.full() if defined("row_item.name.first") else ""
-  - Address: |
-      row_item.address.block() if defined("row_item.address.address") else ""
-  - Accommodation request: |
-      row_item.accommodation_request if defined("row_item.accommodation_request") else ""
-  - Signature date: |
-      row_item.signature_date if defined("row_item.signature_date") else ""
+  - Signature if final: |
+      row_item.signature_if_final if defined("row_item.signature_if_final") else ""
   - Job title: |
       row_item.job_title if defined("row_item.job_title") else ""
   - Employment start date: |
       row_item.employment_start_date if defined("row_item.employment_start_date") else ""
-  - Other parties name: |
-      row_item.other_parties if defined("row_item.other_parties") else ""  
-  - Other parties contact: |
-      row_item.other_parties_contact if defined("row_item.other_parties_contact") else ""  
-  - Other parties address line one: |
-      row_item.other_parties_address_line_one if defined("row_item.other_parties_address_line_one") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Accommodation request: |
+      row_item.accommodation_request if defined("row_item.accommodation_request") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
   - Other parties address line two: |
       row_item.other_parties_address_line_two if defined("row_item.other_parties_address_line_two") else ""
+  - Email: |
+      row_item.email if defined("row_item.email") else ""
+  - Other parties address line one: |
+      row_item.other_parties_address_line_one if defined("row_item.other_parties_address_line_one") else ""
+  - Other parties: |
+      row_item.other_parties if defined("row_item.other_parties") else ""
+  - Signature date: |
+      row_item.signature_date if defined("row_item.signature_date") else ""
   - Disability description: |
       row_item.disability_description if defined("row_item.disability_description") else ""
+  - Other parties contact: |
+      row_item.other_parties_contact if defined("row_item.other_parties_contact") else ""
 edit:
-  - signature
-  - name.first
-  - address.address
-  - accommodation_request
-  - signature_date
+  - signature_if_final
   - job_title
   - employment_start_date
-  - other_parties
-  - other_parties_contact
-  - other_parties_address_line_one
+  - address.address
+  - accommodation_request
+  - name.first
   - other_parties_address_line_two
+  - email
+  - other_parties_address_line_one
+  - other_parties
+  - signature_date
   - disability_description
+  - other_parties_contact
 confirm: True
 
 ---
@@ -273,7 +300,7 @@ progress: 100
 # ALDocument objects specify the metadata for each template
 objects:
   - reasonable_accommodation_letter_Post_interview_instructions: ALDocument.using(title="Instructions", filename="reasonable_accommodation_letter_next_steps.docx", enabled=True, has_addendum=False)
-  - reasonable_accommodation_letter_attachment: ALDocument.using(title="Reasonable Accommodation Letter", filename="reasonable_accommodation_letter.docx", enabled=True, has_addendum=False, )
+  - reasonable_accommodation_letter_attachment: ALDocument.using(title="Reasonable accommodation letter", filename="reasonable_accommodation_letter", enabled=True, has_addendum=False, )
 ---
 # Bundles group the ALDocuments into separate downloads, such as for court and for the user
 objects:

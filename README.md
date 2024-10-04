@@ -1,6 +1,6 @@
 # docassemble.ReasonableAccommodationLetter
 
-Reasonable Accommodation Letter
+Reasonable accommodation letter
 
 ## Author
 
