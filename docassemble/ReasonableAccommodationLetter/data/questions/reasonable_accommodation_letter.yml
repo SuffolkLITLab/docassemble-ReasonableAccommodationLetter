@@ -8,15 +8,15 @@ metadata:
   short title: >-
     Reasonable accommodation
   description: |-
-    This interview helps someone in Massachusetts write a reasonable accommodation letter.
-  can_I_use_this_form: |
+    This interview helps someone in Massachusetts write a reasonable accommodation letter to their employer. A reasonable accommodation is a change or adjustment that allows a qualified person with a disability to participate in the job application process, perform their job, and receive the same benefits as other employees.
+  can_I_use_this_form: | 
     If you are an employee, you can use this interview to request a reasonable accommodation from your employer.
   before_you_start: |
-    This interview will help you write a reasonable accommodation letter.
+    This interview will help you write a reasonable accommodation letter to your employer.
     
     Before you get started, please gather:
     
-    1. Specific item(s) you are requesting. 
+    1. Specific item(s) you are requesting. For example: Work environment, such as with ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
     1. Medical records (if employer requests). 
     1. Employer address and contact information. 
     
@@ -89,7 +89,7 @@ code: |
   set_progress(40)
   users[0].accommodation_request
   users[0].disability_description
-  users[0].signature_if_final
+  users[0].signature
   interview_order_reasonable_accommodation_letter = True
 ---
 ###################### Main order ######################
@@ -117,11 +117,11 @@ continue button field: reasonable_accommodation_letter_intro
 question: |
   Reasonable accommodation letter
 subquestion: |
-  This interview will help you write a reasonable accommodation letter.
+  This interview will help you write a reasonable accommodation letter to your employer. A reasonable accommodation is a change or adjustment that allows a qualified person with a disability to participate in the job application process, perform their job, and receive the same benefits as other employees.
   
   Before you get started, please gather:
   
-  1. Specific item(s) you are requesting. 
+  1. Specific item(s) you are requesting. For example: Work environment, such as with ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
   1. Medical records (if employer requests). 
   1. Employer address and contact information. 
   
@@ -149,9 +149,9 @@ question: |
 subquestion: |
   Please tell us who you work for, and their contact information.
 fields:
-  - "Employer Address (City, State, Zip)": users[0].other_parties_address_line_two
-  - "Employer Address (Street, Unit)": users[0].other_parties_address_line_one
   - "Employer Name": users[0].other_parties
+  - "Employer Address (Street, Unit)": users[0].other_parties_address_line_one
+  - "Employer Address (City, State, Zip)": users[0].other_parties_address_line_two
   - "Employer Contact Name (i.e., HR contact person)": users[0].other_parties_contact
 ---
 id: Employment Start Date
@@ -187,7 +187,7 @@ question: |
 subquestion: |
   If you are satisfied with your answers, enter the date and upload a signature file (.png)
 fields:
-  - "Signature": users[0].signature_if_final
+  - "Signature": users[0].signature
   - "Signature date (if final)": users[0].signature_date
     datatype: date
     required: False
@@ -209,7 +209,7 @@ subquestion: |
 continue button field: reasonable_accommodation_letter_preview_question    
 ---
 code: |
-  signature_fields = []
+  signature_fields = ['users[0].signature']
 ---
 id: reasonable accommodation letter review screen
 event: review_reasonable_accommodation_letter
@@ -236,7 +236,7 @@ table: users.table
 rows: users
 columns:
   - Signature if final: |
-      row_item.signature_if_final if defined("row_item.signature_if_final") else ""
+      row_item.signature if defined("row_item.signature") else ""
   - Job title: |
       row_item.job_title if defined("row_item.job_title") else ""
   - Employment start date: |
@@ -262,7 +262,7 @@ columns:
   - Other parties contact: |
       row_item.other_parties_contact if defined("row_item.other_parties_contact") else ""
 edit:
-  - signature_if_final
+  - signature
   - job_title
   - employment_start_date
   - address.address
@@ -283,9 +283,9 @@ event: reasonable_accommodation_letter_download
 question: |
   All done
 subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
+  Thank you {{ users[0].name_full() }}. Your form is ready to download, review and deliver.
   
-  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+  View, download, review and send your form below. Click the "Edit answers" button to fix any mistakes. You may also email an editable version to yourself. 
 
   ${ action_button_html(url_action('review_reasonable_accommodation_letter'), label='Edit answers', color='info') }
   
