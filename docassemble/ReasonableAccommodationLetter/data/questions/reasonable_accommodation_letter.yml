@@ -121,7 +121,7 @@ subquestion: |
   
   Before you get started, please gather:
   
-  1. Specific item(s) you are requesting. For example: Work environment, such as with ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
+  1. Specific item(s) you are requesting. Example: Ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
   1. Medical records (if employer requests). 
   1. Employer address and contact information. 
   
@@ -139,7 +139,7 @@ id: Employee Contact Information
 question: |
   Employee Contact Information
 subquestion: |
-  Please provide your name, address, and job title.
+  Add job title.
 fields:
   - "Job Title": users[0].job_title
 ---
@@ -147,7 +147,7 @@ id: Employer Company Information
 question: |
   Employer (Company) Information
 subquestion: |
-  Please tell us who you work for, and their contact information.
+  Who do you work for? Add their contact information for the letter, along with a contact name. 
 fields:
   - "Employer Name": users[0].other_parties
   - "Employer Address (Street, Unit)": users[0].other_parties_address_line_one
@@ -167,7 +167,7 @@ id: Accommodation Request
 question: |
   Accommodation Request
 subquestion: |
-  Please provide a description of the accommodation you are requesting. For examples, see https://www.mass.gov/info-details/request-for-reasonable-accommodation
+  Provide a description of the accommodation you are requesting. For examples, see https://www.mass.gov/info-details/request-for-reasonable-accommodation
 fields:
   - "Provide a brief description of the accommodation": users[0].accommodation_request
 ---
@@ -283,7 +283,7 @@ event: reasonable_accommodation_letter_download
 question: |
   All done
 subquestion: |
-  Thank you {{ users[0].name_full() }}. Your form is ready to download, review and deliver.
+  Thank you ${ users[0].name_full() }. Your form is ready to download, review and deliver.
   
   View, download, review and send your form below. Click the "Edit answers" button to fix any mistakes. You may also email an editable version to yourself. 
 
