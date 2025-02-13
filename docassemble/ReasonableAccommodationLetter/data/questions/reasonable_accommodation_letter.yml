@@ -104,9 +104,14 @@ code: |
   users[0].accommodation_request
   users[0].disability_description
   set_progress(60)
-  users[0].drawn_signature
-  users[0].uploaded_signature
+  # users[0].drawn_signature
+  # users[0].uploaded_signature
+  reasonable_accommodation_letter_preview_question
+  basic_questions_signature_flow
+  users[0].signature
+  # download
   interview_order_reasonable_accommodation_letter = True
+  
 ---
 ###################### Main order ######################
 comment: |
@@ -197,7 +202,6 @@ subquestion: |
 fields:
   - "Provide a short description of the disability.": users[0].disability_description
 ---
----
 id: Signature
 question: |
   Sign your name
@@ -213,10 +217,6 @@ fields:
     required: false
   - "upload signature": users[0].uploaded_signature  
     datatype: file
-    allowed extensions:
-      - png
-      - jpg
-      - jpeg
     required: false
   - "Date signed": users[0].signature_date
     datatype: date
