@@ -10,9 +10,8 @@ metadata:
   description: |-
     This interview helps someone in Massachusetts write a reasonable accommodation letter to their employer. A reasonable accommodation is a change or adjustment that allows a qualified person with a disability to participate in the job application process, perform their job, and receive the same benefits as other employees.
   can_I_use_this_form: | 
-    If you are an employee, you can use this interview to request a reasonable accommodation from your employer.
+    If you are an employee, you can use this interview to help write a request for a reasonable accommodation from your employer.
   before_you_start: |
-    This interview will help you write a reasonable accommodation letter to your employer.
     
     Before you get started, please gather:
     
@@ -25,6 +24,7 @@ metadata:
     1. Review, print, and sign your letter. 
     1. Email or deliver your letter to your employer. 
     1. Save a copy of all correspondence for your records.
+    
   maturity: production
   estimated_completion_minutes: 5
   estimated_completion_delta: 5
@@ -58,15 +58,29 @@ code: |
   github_repo_name =  'docassemble-ReasonableAccommodationLetter'
 ---
 code: |
-  interview_short_title = "Write a reasonable accommodation letter"
+  interview_short_title = "Request a reasonable accommodation"
 ---
 code: |
   al_form_type = "letter" 
+---
+code: |
+  def adjust_text(accommodation_request, disability_description):
+      if "wheelchair" in accommodation_request.lower():
+          accommodation_request = f"access to a wheelchair or wheelchair-accessible facilities"
+      
+      if "a wheelchair" in disability_description.lower():
+          disability_description = "a mobility impairment requiring the use of a wheelchair"
+
+      return f"I am requesting {accommodation_request} as a reasonable accommodation under the ADA. As you may know, I have {disability_description}, and this accommodation would enable me to perform my job effectively."
+
+  corrected_text = adjust_text(users[0].accommodation_request, users[0].disability_description)
 ---
 objects:
   - users: ALPeopleList.using(there_are_any=True)
 ---
 sections:
+  - employee_contact_information: Employee Contact Information
+  - disability_or_condition_information: Disability or Condition Information
   - review_reasonable_accommodation_letter: Review your answers
 ---
 #################### Interview order #####################
@@ -90,9 +104,14 @@ code: |
   users[0].accommodation_request
   users[0].disability_description
   set_progress(60)
-  users[0].drawn_signature
-  users[0].uploaded_signature
+  # users[0].drawn_signature
+  # users[0].uploaded_signature
+  reasonable_accommodation_letter_preview_question
+  basic_questions_signature_flow
+  users[0].signature
+  # download
   interview_order_reasonable_accommodation_letter = True
+  
 ---
 ###################### Main order ######################
 comment: |
@@ -120,22 +139,21 @@ question: |
   Reasonable accommodation letter
 subquestion: |
   This interview will help you write a reasonable accommodation letter to your employer. A reasonable accommodation is a change or adjustment that allows a person qualified for employment, who has a disability, to participate in the job application process, perform their job, and receive the same benefits as other employees.
+
+  Most people take about 5 minutes to complete this interview.
   
-  Before you get started, please gather:
+  **Before you get started, please gather:**
   
   1. Specific item(s) you are requesting. Examples: Ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
   1. Medical records (some employers require documentation). 
   1. Employer address and contact information. 
   
-  When you are finished, you will need to:
+  **When you are finished, you will need to:**
   
   1. Review, print, and sign your letter. 
   1. Email or deliver your letter to your employer. 
   1. Save a copy of all correspondence for your records.
 
-  If you are an employee, you can use this interview to request a reasonable accommodation from your employer.
-
-  Most people take about 5 minutes to complete this interview.
 ---
 id: Employee Contact Information
 question: |
@@ -164,6 +182,7 @@ subquestion: |
 fields:
   - "What date did your employment begin": users[0].employment_start_date
     datatype: date
+    required: false
 ---
 id: Accommodation Request
 question: |
@@ -185,24 +204,33 @@ fields:
 ---
 id: Signature
 question: |
-  Signature
+  Sign your name
 subquestion: |
-  If you are satisfied with your answers, you may: 
+  If you are satisfied with your answers: 
   
-    - **sign using your mouse or keypad below** 
-  
-    - **upload a signature file (.png or .jpeg)**
-  
+    - **Sign using your mouse or keypad below** 
+    - **Upload a signature file (.png or .jpeg)**
+
 fields:
-  - signature_draw_here: users[0].drawn_signature
+  - "Sign here": users[0].drawn_signature
     datatype: signature
     required: false
-  - upload_signature_file: users[0].uploaded_signature  
+  - "upload signature": users[0].uploaded_signature  
     datatype: file
     required: false
-  - signature date (if final): users[0].signature_date
+  - "Date signed": users[0].signature_date
     datatype: date
-    required: False
+    default: ${today()}
+under: | 
+  ${users[0].name_full()}
+---
+code: | 
+  if defined(users[0].drawn_signature) and users[0].drawn_signature:
+    final_signature = users[0].drawn_signature
+  elif defined (users[0].uploaded_signature) and users[0].uploaded_signature:
+    final_signature = users[0].uploaded_signature
+  else:
+    final_signature = users[0].name_full()
 ---
 code: |
   signature_draw_here_fields = ['users[0].drawn_signature']
