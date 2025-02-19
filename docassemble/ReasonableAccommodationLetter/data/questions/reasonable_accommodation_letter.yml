@@ -104,8 +104,9 @@ code: |
   users[0].accommodation_request
   users[0].disability_description
   set_progress(60)
-  # users[0].drawn_signature
-  # users[0].uploaded_signature
+  users[0].drawn_signature
+  users[0].uploaded_signature
+  final_signature
   reasonable_accommodation_letter_preview_question
   basic_questions_signature_flow
   users[0].signature
@@ -186,11 +187,12 @@ fields:
 ---
 id: Accommodation Request
 question: |
-  Accommodation Request
+  Accommodation request
 subquestion: |
-  Provide a description of the accommodation you are requesting. For examples, see https://www.mass.gov/info-details/request-for-reasonable-accommodation
+  Provide a description of the accommodation you are requesting. For examples, see [Mass.gov's explanation for how to get an accomodation](https://www.mass.gov/info-details/request-for-reasonable-accommodation).
 fields:
   - "Provide a brief description of the accommodation": users[0].accommodation_request
+    datatype: area
 ---
 id: Disability or Condition Information
 question: |
@@ -225,9 +227,9 @@ under: |
   ${users[0].name_full()}
 ---
 code: | 
-  if defined(users[0].drawn_signature) and users[0].drawn_signature:
+  if defined("users[0].drawn_signature") and users[0].drawn_signature:
     final_signature = users[0].drawn_signature
-  elif defined (users[0].uploaded_signature) and users[0].uploaded_signature:
+  elif defined ("users[0].uploaded_signature") and users[0].uploaded_signature:
     final_signature = users[0].uploaded_signature
   else:
     final_signature = users[0].name_full()
