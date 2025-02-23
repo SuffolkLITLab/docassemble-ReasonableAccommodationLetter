@@ -107,9 +107,9 @@ code: |
   users[0].drawn_signature
   users[0].uploaded_signature
   final_signature
-  reasonable_accommodation_letter_preview_question
   basic_questions_signature_flow
   users[0].signature
+  reasonable_accommodation_letter_preview_question
   # download
   interview_order_reasonable_accommodation_letter = True
   
@@ -158,7 +158,7 @@ subquestion: |
 ---
 id: Employee Contact Information
 question: |
-  Employee Contact Information
+  Employee contact information
 subquestion: |
   Add job title.
 fields:
@@ -166,7 +166,7 @@ fields:
 ---
 id: Employer Company Information
 question: |
-  Employer (Company) Information
+  Employer information
 subquestion: |
   Who do you work for? Add their contact information for the letter, along with a contact name. 
 fields:
@@ -177,11 +177,11 @@ fields:
 ---
 id: Employment Start Date
 question: |
-  Employment Start Date
+  Employment start date
 subquestion: |
   What date did you start working for this company?
 fields:
-  - "What date did your employment begin": users[0].employment_start_date
+  - "date did your started working here": users[0].employment_start_date
     datatype: date
     required: false
 ---
@@ -189,14 +189,15 @@ id: Accommodation Request
 question: |
   Accommodation request
 subquestion: |
-  Provide a description of the accommodation you are requesting. For examples, see [Mass.gov's explanation for how to get an accomodation](https://www.mass.gov/info-details/request-for-reasonable-accommodation).
+  Provide a description of the accommodation you are requesting. 
+  For examples, see [Mass.gov's explanation for how to get an accomodation](https://www.mass.gov/info-details/request-for-reasonable-accommodation). Clicking on link will take you to a new website. 
 fields:
   - "Provide a brief description of the accommodation": users[0].accommodation_request
     datatype: area
 ---
 id: Disability or Condition Information
 question: |
-  Disability or Condition Information
+  Disability or condition information
 subquestion: |
   Provide a short description of the reason you are requesting an accommodation. 
   
@@ -208,10 +209,11 @@ id: Signature
 question: |
   Sign your name
 subquestion: |
-  If you are satisfied with your answers: 
+  If you are satisfied with your answers you may either: 
   
-    - **Sign using your mouse or keypad below** 
-    - **Upload a signature file (.png or .jpeg)**
+    - **Sign using your mouse or keypad below, or** 
+    - **Upload a signature file (.png or .jpeg), or**
+    - **Sign with your mouse or finger on a trackpad on the next screen**
 
 fields:
   - "Sign here": users[0].drawn_signature
@@ -231,12 +233,15 @@ code: |
     final_signature = users[0].drawn_signature
   elif defined ("users[0].uploaded_signature") and users[0].uploaded_signature:
     final_signature = users[0].uploaded_signature
+  elif defined ("users[0].signature") and users[0].signature:
+    final_signature = users[0].signature
   else:
     final_signature = users[0].name_full()
 ---
 code: |
   signature_draw_here_fields = ['users[0].drawn_signature']
   upload_signature_file = [users[0].uploaded_signature]
+  signature_fields = ['users[0].signature']
 ---
 id: preview reasonable_accommodation_letter
 question: |
@@ -312,9 +317,9 @@ edit:
   - address.address
   - accommodation_request
   - name.first
+  - other_parties_address_line_one
   - other_parties_address_line_two
   - email
-  - other_parties_address_line_one
   - other_parties
   - signature_date
   - disability_description
@@ -369,6 +374,3 @@ attachment:
   skip undefined: True
   docx template file: reasonable_accommodation_letter.docx
   tagged pdf: True
-
-
-
