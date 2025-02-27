@@ -1,6 +1,7 @@
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.MATCTheme:matc_theme.yml
 ---
 metadata:
   title: >-
@@ -79,8 +80,8 @@ objects:
   - users: ALPeopleList.using(there_are_any=True)
 ---
 sections:
-  - employee_contact_information: Employee Contact Information
-  - disability_or_condition_information: Disability or Condition Information
+  - employee_contact_information: Employee contact information
+  - disability_or_condition_information: Disability or condition
   - review_reasonable_accommodation_letter: Review your answers
 ---
 #################### Interview order #####################
@@ -98,6 +99,7 @@ code: |
   users[0].email
   set_progress(20)
   users[0].job_title
+  users[0].other_parties_address_line_one
   users[0].other_parties_address_line_two
   users[0].employment_start_date
   set_progress(40)
@@ -159,10 +161,10 @@ subquestion: |
 id: Employee Contact Information
 question: |
   Employee contact information
-subquestion: |
-  Add job title.
 fields:
   - "Job Title": users[0].job_title
+under: | 
+  Job Title
 ---
 id: Employer Company Information
 question: |
@@ -179,7 +181,7 @@ id: Employment Start Date
 question: |
   Employment start date
 subquestion: |
-  What date did you start working for this company?
+  What was your start date (or, date you will start working)?
 fields:
   - "date did your started working here": users[0].employment_start_date
     datatype: date
@@ -190,7 +192,7 @@ question: |
   Accommodation request
 subquestion: |
   Provide a description of the accommodation you are requesting. 
-  For examples, see [Mass.gov's explanation for how to get an accomodation](https://www.mass.gov/info-details/request-for-reasonable-accommodation). Clicking on link will take you to a new website. 
+  For examples, see [Mass.gov's explanation for how to get an accomodation](https://www.mass.gov/info-details/request-for-reasonable-accommodation). **Clicking on link will take you to a new website.** 
 fields:
   - "Provide a brief description of the accommodation": users[0].accommodation_request
     datatype: area
@@ -201,9 +203,9 @@ question: |
 subquestion: |
   Provide a short description of the reason you are requesting an accommodation. 
   
-  Note: Some employers may request medical documentation related to the disability.
+  **Note: Some employers may request medical documentation related to the disability.**
 fields:
-  - "Provide a short description of the disability.": users[0].disability_description
+  - "Description of the disability.": users[0].disability_description
 ---
 id: Signature
 question: |
