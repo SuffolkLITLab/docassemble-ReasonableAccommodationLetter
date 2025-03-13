@@ -1,13 +1,13 @@
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
-  - docassemble.MATCTheme:matc_theme.yml
+  - docassemble.MassAccess:massaccess.yml
 ---
 metadata:
   title: >-
-    Reasonable accommodation letter
+    Employee reasonable accommodation letter
   short title: >-
-    Reasonable accommodation
+    Employee reasonable accommodation
   description: |-
     This interview helps someone in Massachusetts write a reasonable accommodation letter to their employer. A reasonable accommodation is a change or adjustment that allows a qualified person with a disability to participate in the job application process, perform their job, and receive the same benefits as other employees.
   can_I_use_this_form: | 
@@ -59,7 +59,7 @@ code: |
   github_repo_name =  'docassemble-ReasonableAccommodationLetter'
 ---
 code: |
-  interview_short_title = "Request a reasonable accommodation"
+  interview_short_title = "Request a reasonable accommodation in employment"
 ---
 code: |
   al_form_type = "letter" 
@@ -147,7 +147,7 @@ subquestion: |
   
   **Before you get started, please gather:**
   
-  1. Specific item(s) you are requesting. Examples: Ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
+  1. Specific items you are requesting. Examples: Ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
   1. Medical records (some employers require documentation). 
   1. Employer address and contact information. 
   
