@@ -27,7 +27,7 @@ metadata:
     1. Save a copy of all correspondence for your records.
     
   maturity: production
-  estimated_completion_minutes: 5
+  estimated_completion_minutes: 10
   estimated_completion_delta: 5
   tags: []
   authors:
@@ -77,7 +77,8 @@ code: |
   corrected_text = adjust_text(users[0].accommodation_request, users[0].disability_description)
 ---
 objects:
-  - users: ALPeopleList.using(there_are_any=True)
+  - users: ALPeopleList.using(ask_number=True, target_number=1)
+  - other_parties: ALPeopleList.using(ask_number=True, target_number=1)
 ---
 sections:
   - employee_contact_information: Employee contact information
@@ -90,27 +91,23 @@ comment: |
 id: interview_order_reasonable_accommodation_letter
 code: |
   # Set the allowed courts for this interview
-  nav.set_section("review_reasonable_accommodation_letter")
+  nav.set_section("employee_contact_information")
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
   users.gather()
+  other_parties.gather()
   set_parts(subtitle=str(users))
   users[0].address.address
   users[0].email
   set_progress(20)
   users[0].job_title
-  users[0].other_parties_address_line_one
-  users[0].other_parties_address_line_two
   users[0].employment_start_date
   set_progress(40)
+  nav.set_section("disability_or_condition_information")
   users[0].accommodation_request
   users[0].disability_description
-  set_progress(60)
-  users[0].drawn_signature
-  users[0].uploaded_signature
-  final_signature
-  basic_questions_signature_flow
-  users[0].signature
+  set_progress(99)
+  nav.set_section("review_reasonable_accommodation_letter")
   reasonable_accommodation_letter_preview_question
   # download
   interview_order_reasonable_accommodation_letter = True
@@ -126,6 +123,7 @@ code: |
   reasonable_accommodation_letter_intro
   interview_order_reasonable_accommodation_letter
   signature_date
+  basic_questions_signature_flow
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
       persistent=True,
@@ -141,108 +139,120 @@ continue button field: reasonable_accommodation_letter_intro
 question: |
   Reasonable accommodation letter
 subquestion: |
-  This interview will help you write a reasonable accommodation letter to your employer. A reasonable accommodation is a change or adjustment that allows a person qualified for employment, who has a disability, to participate in the job application process, perform their job, and receive the same benefits as other employees.
+  This interview will help you write a reasonable accommodation letter to your employer. 
+  A reasonable accommodation is a change or adjustment that allows a person qualified for employment, 
+  who has a disability, to participate in the job application process, perform their job, 
+  and receive the same benefits as other employees.
 
-  Most people take about 5 minutes to complete this interview.
+  Most people take about 15 minutes to complete this interview.
   
-  **Before you get started, please gather:**
+  **Before you start:**
   
-  1. Specific items you are requesting. Examples: Ramps or accessible restrooms, equipment, schedule, job duties, training materials, interpreters.  
-  1. Medical records (some employers require documentation). 
-  1. Employer address and contact information. 
+  1. Decide what you want your employer to do. For example: A sign language interpreter, large print or Braille materials, a screen reader, or changes to your work environment.
+
+  Gather:
+
+  1. Any proof of your disability, which may be a letter from a doctor. You may not need to give this to your employer, but be ready to do so if asked.
+  1. Contact information for your employer.
   
   **When you are finished, you will need to:**
   
   1. Review, print, and sign your letter. 
-  1. Email or deliver your letter to your employer. 
-  1. Save a copy of all correspondence for your records.
-
+  1. Email or deliver your letter to your employer. This interview does not deliver the letter for you.
 ---
+sets: 
+  - users[0].name.first
+  - users[0].address.address
 id: Employee Contact Information
 question: |
-  Employee contact information
+  About you
 fields:
-  - "Job Title": users[0].job_title
-under: | 
-  Job Title
+  - code: |
+      users[0].name_fields()
+  - "Email address": users[0].email
+    datatype: email
+  - code: |
+      users[0].address_fields(default_state=AL_DEFAULT_STATE)
 ---
+sets:
+  - other_parties[0].name.first
+  - other_parties[0].address.address
+  - other_parties[0].address.city
 id: Employer Company Information
 question: |
-  Employer information
-subquestion: |
-  Who do you work for? Add their contact information for the letter, along with a contact name. 
+  Who is your employer?
 fields:
-  - "Employer Name": users[0].other_parties
-  - "Employer Address (Street, Unit)": users[0].other_parties_address_line_one
-  - "Employer Address (City, State, Zip)": users[0].other_parties_address_line_two
-  - "Employer Contact Name (i.e., HR contact person)": users[0].other_parties_contact
+  - code: |
+      other_parties[0].name_fields(person_or_business="unsure")
+  - "Employer contact person": other_parties[0].contact_person_name
+    show if:
+      variable: other_parties[0].person_type
+      is: business
+    under text: |
+      For example, the person who is in charge of hiring or HR.
+  - code: |
+      other_parties[0].address_fields(default_state=AL_DEFAULT_STATE)
 ---
 id: Employment Start Date
 question: |
-  Employment start date
-subquestion: |
-  What was your start date (or, date you will start working)?
+  About your job
 fields:
-  - "date did your started working here": users[0].employment_start_date
-    datatype: date
+  - "Job title": users[0].job_title
+  - Date you started this job: users[0].employment_start_date
+    datatype: ThreePartsDate
     required: false
+    under text: |
+      Write your planned start date if you haven't started working yet.
 ---
 id: Accommodation Request
 question: |
-  Accommodation request
+  Request for accommodation
 subquestion: |
-  Provide a description of the accommodation you are requesting. 
-  For examples, see [Mass.gov's explanation for how to get an accomodation](https://www.mass.gov/info-details/request-for-reasonable-accommodation). **Clicking on link will take you to a new website.** 
+  What do you want ${ other_parties } to do?
+
+  ${ collapse_template(reasonable_accommodation_examples_template) }
+
 fields:
-  - "Provide a brief description of the accommodation": users[0].accommodation_request
+  - Explain the change you want your employer to make: users[0].accommodation_request
     datatype: area
+---
+template: reasonable_accommodation_examples_template
+subject: |
+  What can I ask for?
+content: |
+  You can ask for anything **reasonable** that is:
+
+  * related to your disability
+  * will allow you to do your job or participate in the hiring process
+
+  For example:
+
+  * A sign language interpreter
+  * Large print or Braille materials
+  * Holding the interview, test, and other parts of the hiring process in a place you can access
+  * A screen reader or other assistive technology
+
+  You can also ask for changes to your work environment, such as:
+
+  * A ramp or accessible restrooms
+  * Equipment or software that is accessible
+  * A flexible schedule
+  * Changes to your job duties
+  * Training materials in an accessible format
+
+  There is no strict definition of "reasonable." It depends on your job and your employer.
 ---
 id: Disability or Condition Information
 question: |
-  Disability or condition information
+  What is your disability?
 subquestion: |
-  Provide a short description of the reason you are requesting an accommodation. 
-  
-  **Note: Some employers may request medical documentation related to the disability.**
+  You may need to give ${ other_parties } more information about your disability,
+  like a letter from your doctor. But not all employers will ask for this.
 fields:
-  - "Description of the disability.": users[0].disability_description
----
-id: Signature
-question: |
-  Sign your name
-subquestion: |
-  If you are satisfied with your answers you may either: 
-  
-    - **Sign using your mouse or keypad below, or** 
-    - **Upload a signature file (.png or .jpeg), or**
-    - **Sign with your mouse or finger on a trackpad on the next screen**
-
-fields:
-  - "Sign here": users[0].drawn_signature
-    datatype: signature
-    required: false
-  - "upload signature": users[0].uploaded_signature  
-    datatype: file
-    required: false
-  - "Date signed": users[0].signature_date
-    datatype: date
-    default: ${today()}
-under: | 
-  ${users[0].name_full()}
----
-code: | 
-  if defined("users[0].drawn_signature") and users[0].drawn_signature:
-    final_signature = users[0].drawn_signature
-  elif defined ("users[0].uploaded_signature") and users[0].uploaded_signature:
-    final_signature = users[0].uploaded_signature
-  elif defined ("users[0].signature") and users[0].signature:
-    final_signature = users[0].signature
-  else:
-    final_signature = users[0].name_full()
+  - "My disability is:": users[0].disability_description
+    datatype: area
 ---
 code: |
-  signature_draw_here_fields = ['users[0].drawn_signature']
-  upload_signature_file = [users[0].uploaded_signature]
   signature_fields = ['users[0].signature']
 ---
 id: preview reasonable_accommodation_letter
@@ -267,13 +277,62 @@ event: review_reasonable_accommodation_letter
 question: |
   Review your answers
 review:
-  - Edit: users.revisit
+  - Edit: users[0].name.first
     button: |
-      **Users**
+      **Your information**
 
-      % for item in users:
-        * ${ item }
-      % endfor
+      ${ users[0].name.full() }
+  - Edit: users[0].address.address
+    button: |
+      **Your address**
+
+      ${ users[0].address.block() }
+  - Edit: users[0].email
+    button: |
+      **Your email**
+
+      ${ users[0].email }
+  - Edit: users[0].job_title
+    button: |
+      **Your job title**
+
+      ${ users[0].job_title }
+  - Edit: users[0].employment_start_date
+    button: |
+      **Employment start date**
+
+      ${ users[0].employment_start_date }
+  - Edit: users[0].accommodation_request
+    button: |
+      **Accommodation request**
+
+      ${ users[0].accommodation_request }
+  - Edit: users[0].disability_description
+    button: |
+      **Disability description**
+
+      ${ users[0].disability_description }
+  - Edit: users[0].signature
+    button: |
+      **Your signature**
+
+      ${ users[0].signature }
+  - Edit: other_parties[0].name.first
+    button: |
+      **Employer name**
+
+      ${ other_parties[0].name.full() }
+  - Edit: other_parties[0].address.address
+    button: |
+      **Employer address**
+
+      ${ other_parties[0].address.block() }
+  - Edit: other_parties[0].contact_person_name
+    button: |
+      **Employer contact person**
+
+      ${ other_parties[0].contact_person_name }
+
 ---
 continue button field: users.revisit
 question: |
@@ -282,52 +341,6 @@ subquestion: |
   ${ users.table }
 
   ${ users.add_action() }
----
-table: users.table
-rows: users
-columns:
-  - Signature if final: |
-      row_item.signature if defined("row_item.signature") else ""
-  - Job title: |
-      row_item.job_title if defined("row_item.job_title") else ""
-  - Employment start date: |
-      row_item.employment_start_date if defined("row_item.employment_start_date") else ""
-  - Address: |
-      row_item.address.block() if defined("row_item.address.address") else ""
-  - Accommodation request: |
-      row_item.accommodation_request if defined("row_item.accommodation_request") else ""
-  - Name: |
-      row_item.name.full() if defined("row_item.name.first") else ""
-  - Other parties address line two: |
-      row_item.other_parties_address_line_two if defined("row_item.other_parties_address_line_two") else ""
-  - Email: |
-      row_item.email if defined("row_item.email") else ""
-  - Other parties address line one: |
-      row_item.other_parties_address_line_one if defined("row_item.other_parties_address_line_one") else ""
-  - Other parties: |
-      row_item.other_parties if defined("row_item.other_parties") else ""
-  - Signature date: |
-      row_item.signature_date if defined("row_item.signature_date") else ""
-  - Disability description: |
-      row_item.disability_description if defined("row_item.disability_description") else ""
-  - Other parties contact: |
-      row_item.other_parties_contact if defined("row_item.other_parties_contact") else ""
-edit:
-  - signature
-  - job_title
-  - employment_start_date
-  - address.address
-  - accommodation_request
-  - name.first
-  - other_parties_address_line_one
-  - other_parties_address_line_two
-  - email
-  - other_parties
-  - signature_date
-  - disability_description
-  - other_parties_contact
-confirm: True
-
 ---
 id: download reasonable_accommodation_letter
 event: reasonable_accommodation_letter_download
