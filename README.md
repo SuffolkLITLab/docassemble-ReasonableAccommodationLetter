@@ -1,6 +1,6 @@
 # docassemble.ReasonableAccommodationLetter
 
-Reasonable accommodation letter
+Reasonable accommodation letter for an employee seeking changes to work
 
 ## Author
 
