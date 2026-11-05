@@ -185,8 +185,11 @@ fields:
   - code: |
       other_parties[0].name_fields(person_or_business="unsure")
   - "Employer contact person": other_parties[0].contact_person_name
-    show if:
-      code: other_parties[0].person_type == "business"
+    # name_fields(person_or_business="unsure") creates person_type on this screen.
+    # Keep this reactive so the contact field follows the employer type selection.
+    show if:  # no-dayc: EG408
+      variable: other_parties[0].person_type
+      is: business
     under text: |
       For example, the person who is in charge of hiring or HR.
   - code: |
